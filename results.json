@@ -1,0 +1,31 @@
+{
+  "question": "Can a LightGBM model that uses network context (neighbouring-link flows and node activity) beat a standard per-link linear trend extrapolation at predicting next-period cattle movement counts between premises?",
+  "method": "Seeded synthetic premises-movement simulation (gravity base rate, per-link trends, AR(1) node shocks); time-ordered split; CV tuning on training months; test set used once per model; seeds 42, 43, 44.",
+  "dataset": {
+    "name": "Simulated premises-to-premises cattle movement network (generated in analysis.py)",
+    "source_url": "none: generated in-script with numpy",
+    "n_rows": 120000,
+    "n_train": 72000,
+    "n_test": 48000,
+    "same_as_paper": false,
+    "baseline_is_papers_method": false
+  },
+  "metric_name": "MAE on raw next-month link counts",
+  "higher_is_better": false,
+  "baseline": "Per-link linear trend fitted by OLS to the last 6 monthly counts, extrapolated one month ahead and clipped at zero.",
+  "improved": "LightGBM regressor on log1p counts using lagged counts, rolling means, and network features from the previous month (out/in degree and neighbouring-link flows at source and destination premises); hyper-parameters chosen by time-ordered CV on training data.",
+  "metrics": {
+    "baseline_score": 2.323651388888889,
+    "improved_score": 1.9205632864754107,
+    "improvement": 0.40308810241347826,
+    "baseline_score_std": 0.03854463583824969,
+    "improved_score_std": 0.04862760650780328,
+    "baseline_f1": 0.9023373239328664,
+    "improved_f1": 0.9411009748520657,
+    "baseline_top10_hit_rate": 0.6015972222222222,
+    "improved_top10_hit_rate": 0.6504861111111112,
+    "n_seeds": 3,
+    "elapsed_seconds": 20.006661891937256
+  },
+  "notes": "Synthetic data stand in for the paper's Great Britain cattle movement records, which are not publicly downloadable; results do not transfer to real data. The baseline is a plain trend tracker, not the paper's predictive trend mining framework. Std is the population std (ddof=0) over 3 simulation seeds. Secondary metrics: top-decile hit rate (overlap of top-10% predicted and actual links) and F1 on active links (count>0) with a 0.5 threshold on predictions. The test set was used once per model."
+}
