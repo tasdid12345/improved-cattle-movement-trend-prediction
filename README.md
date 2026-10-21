@@ -17,6 +17,28 @@ python analysis.py
 
 **Results:** results are written to `results.json` (and `figures/mae_comparison.png`).
 
+## Results (latest run)
+
+On a synthetic premises-to-premises cattle movement network (held-out test set, 3 seeds), a LightGBM model with network context reached MAE 1.92 on next-month link counts, versus 2.32 for a standard per-link linear trend extrapolation.
+
+| Metric | Value |
+|---|---|
+| baseline_score | 2.324 |
+| improved_score | 1.921 |
+| improvement | 0.4031 |
+| baseline_score_std | 0.03854 |
+| improved_score_std | 0.04863 |
+| baseline_f1 | 0.9023 |
+| improved_f1 | 0.9411 |
+| baseline_top10_hit_rate | 0.6016 |
+| improved_top10_hit_rate | 0.6505 |
+| n_seeds | 3 |
+| elapsed_seconds | 20.01 |
+
+Run on 2026-10-21. Full output: [results.json](results.json) · [run.log](run.log)
+
+Notes: Synthetic data stand in for the paper's Great Britain cattle movement records, which are not publicly downloadable; results do not transfer to real data. The baseline is a plain trend tracker, not the paper's predictive trend mining framework. Std is the population std (ddof=0) over 3 simulation seeds. Secondary metrics: top-decile hit rate (overlap of top-10% predicted and actual links) and F1 on active links (count>0) with a 0.5 threshold on predictions. The test set was used once per model.
+
 ## Reference
 
 This project is motivated by the following paper:
